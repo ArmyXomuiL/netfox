@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import netfox_ios
 
 class TextViewController: UIViewController {
     
@@ -19,6 +20,7 @@ class TextViewController: UIViewController {
     }
     
     @IBAction func tappedLoad(_ sender: Any) {
+        NFX.sharedInstance().saveGrpc(message: .init(path: "some path"))
         dataTask?.cancel()
         
         if session == nil {

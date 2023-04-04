@@ -195,6 +195,12 @@ open class NFX: NSObject {
     @objc open func ignoreURLsWithRegexes(_ regexes: [String]) {
         ignoredURLsRegex.append(contentsOf: regexes.map { NSRegularExpression($0) })
     }
+
+    @objc open func saveGrpc(message: NFXGRPCModel) {
+        let event = NFXHTTPModel()
+        event.prepareFromGrpc(message: message)
+        NFXHTTPModelManager.shared.add(event)
+    }
     
     internal func getLastVisitDate() -> Date {
         return lastVisitDate

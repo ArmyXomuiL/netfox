@@ -60,6 +60,16 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
         requestType = requestHeaders?["Content-Type"] as! String?
         requestCurl = request.getCurl()
     }
+
+    func prepareFromGrpc(message: NFXGRPCModel) {
+        requestDate = Date()
+        requestTime = getTimeFromDate(requestDate!)
+
+        requestURL = message.path
+        requestTimeout = "asd"
+        requestCachePolicy = "ok"
+        requestMethod = "gRPC"
+    }
     
     func saveRequestBody(_ request: URLRequest) {
         saveRequestBodyData(request.getNFXBody())
