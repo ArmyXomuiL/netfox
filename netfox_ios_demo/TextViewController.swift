@@ -20,7 +20,29 @@ class TextViewController: UIViewController {
     }
     
     @IBAction func tappedLoad(_ sender: Any) {
-        NFX.sharedInstance().saveGrpc(message: .init(path: "some path"))
+        let event = NFX.sharedInstance().saveGrpcRequest(
+            message: .init(
+                path: "some path",
+                requestTimeout: "sdaf",
+                requestCachePolicy: "asdf",
+                requestURLComponents: nil,
+                requestURLQueryItems: nil,
+                requestHeaders: nil,
+                requestType: nil,
+                requestCurl: nil,
+                body: "{body}"
+            )
+        )
+
+        NFX.sharedInstance().saveGrpcResponse(
+            event: event,
+            message: .init(
+                responseStatus: 200,
+                responseHeaders: [:],
+                body: "{body2}"
+            )
+        )
+
         dataTask?.cancel()
         
         if session == nil {

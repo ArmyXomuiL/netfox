@@ -61,13 +61,25 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
         requestCurl = request.getCurl()
     }
 
-    func prepareFromGrpc(message: NFXGRPCModel) {
+    func saveGRPCRequest(gRPCMessage: NFXGRPCRequestModel) {
         requestDate = Date()
         requestTime = getTimeFromDate(requestDate!)
 
-        requestURL = message.path
-        requestTimeout = "asd"
-        requestCachePolicy = "ok"
+        requestURL = gRPCMessage.path
+        requestTimeout = gRPCMessage.requestTimeout
+        requestCachePolicy = gRPCMessage.requestCachePolicy
+
+        requestURLComponents = gRPCMessage.requestURLComponents
+        requestURLQueryItems = gRPCMessage.requestURLQueryItems
+        requestHeaders = gRPCMessage.requestHeaders
+        requestType = gRPCMessage.requestType
+        requestCurl = gRPCMessage.requestCurl
+
+        if let body = gRPCMessage.body {
+            requestBodyLength = body.count
+            saveData(body, to: getRequestBodyFileURL())
+        }
+
         requestMethod = "gRPC"
     }
     
@@ -101,6 +113,30 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
         timeInterval = Float(responseDate!.timeIntervalSince(requestDate!))
         
         saveResponseBodyData(data)
+        formattedResponseLogEntry().appendToFileURL(NFXPath.sessionLogURL)
+    }
+
+    func saveGrpcResponse(gRPCMessage: NFXGRPCResponseModel) {
+        self.noResponse = false
+        self.responseDate = Date()
+        self.responseTime = getTimeFromDate(responseDate!)
+
+        self.responseStatus = gRPCMessage.responseStatus
+        self.responseHeaders = gRPCMessage.responseHeaders
+
+        if let contentType = gRPCMessage.responseHeaders["Content-Type"] as? String {
+            let responseType = contentType.components(separatedBy: ";")[0]
+            self.shortType = HTTPModelShortType(contentType: responseType)
+            self.responseType = responseType
+        }
+
+        self.timeInterval = Float(responseDate!.timeIntervalSince(requestDate!))
+
+        if let body = gRPCMessage.body {
+            responseBodyLength = body.count
+            saveData(body, to: getResponseBodyFileURL())
+        }
+
         formattedResponseLogEntry().appendToFileURL(NFXPath.sessionLogURL)
     }
     
